@@ -11,38 +11,35 @@ function Products({ products, loading, fetchProducts, fetchAnalytics }) {
     description: '' 
   });
   const [search, setSearch] = useState("");
-  
-    // Filter products based on search query
+  const [categoryFilter, setCategoryFilter] = useState("");
+
+  // Get unique categories from products
+  const categories = Array.from(new Set(products.map(p => p.category))).filter(Boolean);
+
+  // Filter products based on search query and category
   const filteredProducts = products.filter((product) => {
     const query = search.toLowerCase();
-    return (
+    const matchesSearch =
       product.name.toLowerCase().includes(query) ||
       product.category.toLowerCase().includes(query) ||
-      (product.description && product.description.toLowerCase().includes(query))
-    );
+      (product.description && product.description.toLowerCase().includes(query));
+    const matchesCategory = categoryFilter ? product.category === categoryFilter : true;
+    return matchesSearch && matchesCategory;
   });
-  
+
   const handleAddProduct = async (e) => {
     e.preventDefault();
-    console.log('Adding product:', newProduct);
-    
     if (!newProduct.name || !newProduct.price || !newProduct.category) {
-      console.log('Missing required fields');
       toast.error('Please fill in all required fields: name, price, and category');
       return;
     }
-
     try {
-      console.log('Making API call to:', `/api/products`);
       const result = await API.products.create(newProduct);
-      
-      console.log('Product created successfully:', result);
       setNewProduct({ name: '', price: '', category: '', stock: '', description: '' });
       fetchProducts();
       fetchAnalytics();
       toast.success('Product added successfully!');
     } catch (error) {
-      console.error('Error adding product:', error);
       toast.error('Error adding product: ' + error.message);
     }
   };
@@ -90,14 +87,26 @@ function Products({ products, loading, fetchProducts, fetchAnalytics }) {
 
       <div className="products-section">
         <h2>Products ({filteredProducts.length})</h2>
-        <input
-          type="text"
-          placeholder="Search products..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="product-search-input"
-          style={{ marginBottom: '1rem', padding: '0.5rem', width: '100%' }}
-        />
+          <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="product-search-input"
+              style={{ padding: '0.5rem', width: '60%' }}
+            />
+            <select
+              value={categoryFilter}
+              onChange={e => setCategoryFilter(e.target.value)}
+              style={{ padding: '0.5rem', width: '40%' }}
+            >
+              <option value="">All Categories</option>
+              {categories.map(cat => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
+          </div>
         <div className="products-grid">
           {filteredProducts.length === 0 ? (
             <p>No products found.</p>
