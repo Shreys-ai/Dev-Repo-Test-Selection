@@ -14,11 +14,7 @@ let users = [
 
 let products = [
   { id: 1, name: 'Laptop', price: 999.99, category: 'Electronics', stock: 50, description: 'High-performance laptop' },
-  { id: 2, name: 'Smartphone', price: 699.99, category: 'Electronics', stock: 100, description: 'Latest smartphone model' },
-  { id: 3, name: 'Headphones', price: 199.99, category: 'Electronics', stock: 75, description: 'Wireless noise-canceling headphones' },
-  { id: 4, name: 'Coffee Maker', price: 89.99, category: 'Home', stock: 30, description: 'Automatic coffee maker' },
-  { id: 5, name: 'Book', price: 14.99, category: 'Education', stock: 200, description: 'Programming fundamentals book' }
-];
+  ];
 
 let orders = [];
 let tasks = [
