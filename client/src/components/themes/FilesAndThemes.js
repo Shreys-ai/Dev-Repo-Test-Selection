@@ -266,55 +266,6 @@ function FilesAndThemes({ backgroundTheme, setBackgroundTheme, hasImageBackgroun
           </button>
         </form>
       </div>
-
-      {/* Uploaded Files List */}
-      <div className="uploaded-files-section">
-        <h2>📋 Uploaded Files ({uploadedFiles.length})</h2>
-        {uploadedFiles.length === 0 ? (
-          <p className="no-files">No files uploaded yet.</p>
-        ) : (
-          <div className="files-list">
-            {uploadedFiles.map((file) => (
-              <div key={file.id} className="file-item">
-                <div className="file-info">
-                  <div className="file-header">
-                    <h4>{file.name}</h4>
-                    {file.isImage && (
-                      <div className="image-preview">
-                        <img src={file.fileURL} alt={file.name} style={{
-                          width: '60px',
-                          height: '60px',
-                          objectFit: 'cover',
-                          borderRadius: '8px',
-                          border: '2px solid rgba(255,255,255,0.3)'
-                        }} />
-                      </div>
-                    )}
-                  </div>
-                  <p>Size: {FileUtils.formatFileSize(file.size)}</p>
-                  <p>Type: {file.type}</p>
-                  <p>Theme: <span className="theme-badge">{file.backgroundTheme}</span></p>
-                  <p>Uploaded: {new Date(file.uploadedAt).toLocaleString()}</p>
-                </div>
-                <div className="file-actions">
-                  <button
-                    className="delete-file-btn"
-                    onClick={() => handleDeleteFile(file.id)}
-                  >
-                    🗑️ Delete
-                  </button>
-                  <button
-                    className="apply-theme-btn"
-                    onClick={() => applyFileAsBackground(file)}
-                  >
-                    {file.isImage && file.backgroundTheme === 'image' ? '🖼️ Set as Background' : '🎨 Apply Theme'}
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
     </div>
   );
 }
