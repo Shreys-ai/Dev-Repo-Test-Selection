@@ -1,8 +1,14 @@
 {
     "scripts": {
-        "start": "concurrently \"cd client && npm start\" \"cd server && node index.js\""
+        "start": "concurrently \"cd server && node index.js\" \"cd client && npm start\""
     },
     "devDependencies": {
         "concurrently": "^9.2.1"
+    },
+    "dependencies": {
+        "cors": "^2.8.5",
+        "dotenv": "^17.2.3",
+        "express": "^5.1.0",
+        "http-proxy-middleware": "^3.0.5"
     }
 }

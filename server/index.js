@@ -1,9 +1,11 @@
 const express = require('express');
 const cors = require('cors');
+const { createProxyMiddleware } = require('http-proxy-middleware');
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 5001;
+const path = require('path');
+const PORT = process.env.PORT || 3000;
 
 // In-memory storage (replace with database in production)
 let users = [
@@ -28,7 +30,8 @@ let tasks = [
 ];
 
 // Middleware
-app.use(cors());
+// Only enable CORS for /api routes
+app.use('/api', cors());
 app.use(express.json());
 
 // Request logging middleware
@@ -37,7 +40,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// Routes
+// API Routes
 // Health check endpoint for PM2 and monitoring
 app.get('/health', (req, res) => {
   const healthCheck = {
@@ -617,8 +620,17 @@ app.post('/api/users/bulk', (req, res) => {
   });
 });
 
+// Proxy non-API requests to React dev server
+app.use('/', createProxyMiddleware({
+  target: 'http://localhost:3001',
+  changeOrigin: true,
+  ws: true,
+  filter: (pathname) => !pathname.startsWith('/api') && !pathname.startsWith('/health')
+}));
+
 app.listen(PORT, () => {
   console.log(`🚀 Server is running on port ${PORT}`);
   console.log(`📱 Frontend should run on http://localhost:3000`);
-  console.log(`🔗 Backend API available at http://localhost:${PORT}/api`);
+  console.log(`🔗 Backend API available at http://localhost:3000/api`);
+  console.log(`🔄 Proxying to React dev server on http://localhost:3001`);
 });
