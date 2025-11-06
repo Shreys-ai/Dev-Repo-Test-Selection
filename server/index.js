@@ -623,3 +623,4 @@ app.listen(PORT, () => {
   console.log(`📱 Frontend should run on http://localhost:3000`);
   console.log(`🔗 Backend API available at http://localhost:${PORT}/api`);
 });
+
