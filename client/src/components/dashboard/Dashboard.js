@@ -4,16 +4,6 @@ function Dashboard({ message, health, analytics }) {
   return (
     <div className="tab-content">
       {/* Backend Connection Status */}
-      <div className="status-section">
-        <h2>Backend Status</h2>
-        <p className="message">{message}</p>
-        {health && (
-          <div className="health-info">
-            <p>Status: <span className="status-ok">{health.status}</span></p>
-            <p>Uptime: {Math.floor(health.uptime)} seconds</p>
-          </div>
-        )}
-      </div>
 
       {/* Analytics */}
       {analytics && (
