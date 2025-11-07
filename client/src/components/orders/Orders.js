@@ -63,16 +63,6 @@ function Orders({ orders, users, products, loading, fetchOrders, fetchProducts, 
       <div className="orders-section">
         <h2>Orders ({orders.length})</h2>
         <div className="orders-list">
-          {orders.map((order) => (
-            <div key={order.id} className="order-item">
-              <h3>Order #{order.id}</h3>
-              <p>User: {users.find(u => u.id === order.userId)?.name || 'Unknown'}</p>
-              <p>Product: {products.find(p => p.id === order.productId)?.name || 'Unknown'}</p>
-              <p>Quantity: {order.quantity}</p>
-              <p>Total: ${order.totalPrice}</p>
-              <span className={`status-badge ${order.status}`}>{order.status}</span>
-            </div>
-          ))}
         </div>
       </div>
     </div>
