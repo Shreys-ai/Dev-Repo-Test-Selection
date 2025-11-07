@@ -59,9 +59,6 @@ function Tasks({ tasks, users, loading, fetchTasks, fetchAnalytics }) {
               <option key={user.id} value={user.id}>{user.name}</option>
             ))}
           </select>
-          <button type="submit" disabled={loading}>
-            {loading ? 'Adding...' : 'Add Task'}
-          </button>
         </form>
       </div>
 
