@@ -50,12 +50,6 @@ function Products({ products, loading, fetchProducts, fetchAnalytics }) {
         <h2>Add New Product</h2>
         <form onSubmit={handleAddProduct} className="product-form">
           <input
-            type="text"
-            placeholder="Product Name"
-            value={newProduct.name}
-            onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
-          />
-          <input
             type="number"
             step="0.01"
             placeholder="Price"
