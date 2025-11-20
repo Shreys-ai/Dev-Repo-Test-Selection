@@ -7,10 +7,31 @@ function Users({ users, loading, fetchUsers, fetchAnalytics }) {
   
   const handleAddUser = async (e) => {
     e.preventDefault();
-    if (!newUser.name || !newUser.email) return;
+    
+    // Validate form fields
+    if (!newUser.name && !newUser.email) {
+      toast.error('Name and Email are required!');
+      return;
+    }
+
+    if (!newUser.name) {
+      toast.error('Name is required!');
+      return;
+    }
+    
+    if (!newUser.email) {
+      toast.error('Email is required!');
+      return;
+    }
+    
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(newUser.email)) {
+      toast.warn('Valid Email is required!');
+      return;
+    }
 
     try {
-    //   toast.info('Adding user...');
       const response = await API.users.create(newUser);
       setNewUser({ name: '', email: '', role: 'user' });
       fetchUsers();
@@ -40,7 +61,7 @@ function Users({ users, loading, fetchUsers, fetchAnalytics }) {
     <div className="tab-content">
       <div className="form-section">
         <h2>Add New User</h2>
-        <form onSubmit={handleAddUser} className="user-form">
+        <form onSubmit={handleAddUser} className="user-form" noValidate>
           <input
             type="text"
             placeholder="Name"
