@@ -232,12 +232,16 @@ app.post('/api/products', (req, res) => {
   if (!name || !price || !category) {
     return res.status(400).json({ error: 'Name, price, and category are required' });
   }
-  
+  // Price validation
+  const parsedPrice = parseFloat(price);
+  if (isNaN(parsedPrice) || parsedPrice < 0) {
+    return res.status(422).json({ error: 'Invalid price value. Price must be a non-negative number.' });
+  }
   productIdCounter += 1;
   const newProduct = {
     id: productIdCounter,
     name,
-    price: parseFloat(price),
+    price: parsedPrice,
     category,
     stock: parseInt(stock) || 0,
     description: description || ''
