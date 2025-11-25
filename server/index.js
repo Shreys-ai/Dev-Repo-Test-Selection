@@ -27,6 +27,11 @@ let tasks = [
   { id: 3, title: 'Test API endpoints', completed: false, priority: 'high', assignedTo: 3, createdAt: new Date().toISOString() }
 ];
 
+let userIdCounter = users.length;
+let productIdCounter = products.length;
+let orderIdCounter = 0;
+let taskIdCounter = tasks.length;
+
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -113,23 +118,27 @@ app.post('/api/users', (req, res) => {
   if (!name || !email) {
     return res.status(400).json({ error: 'Name and email are required' });
   }
-  
+
+  // Email format validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(422).json({ error: 'Valid email is required'});
+  }
   // Check if email already exists
   const existingUser = users.find(u => u.email === email);
   if (existingUser) {
     return res.status(409).json({ error: 'Email already exists' });
   }
   
+  userIdCounter += 1;
   const newUser = {
-    id: Date.now(),
+    id: userIdCounter,
     name,
     email,
     role,
     createdAt: new Date().toISOString()
   };
-  
   users.push(newUser);
-  
   res.status(201).json({
     message: 'User created successfully',
     user: newUser
@@ -224,17 +233,16 @@ app.post('/api/products', (req, res) => {
     return res.status(400).json({ error: 'Name, price, and category are required' });
   }
   
+  productIdCounter += 1;
   const newProduct = {
-    id: Date.now(),
+    id: productIdCounter,
     name,
     price: parseFloat(price),
     category,
     stock: parseInt(stock) || 0,
     description: description || ''
   };
-  
   products.push(newProduct);
-  
   res.status(201).json({
     message: 'Product created successfully',
     product: newProduct
@@ -283,8 +291,9 @@ app.post('/api/orders', (req, res) => {
     return res.status(400).json({ error: 'Insufficient stock' });
   }
   
+  orderIdCounter += 1;
   const newOrder = {
-    id: Date.now(),
+    id: orderIdCounter,
     userId: parseInt(userId),
     productId: parseInt(productId),
     quantity: parseInt(quantity),
@@ -292,13 +301,10 @@ app.post('/api/orders', (req, res) => {
     status: 'pending',
     createdAt: new Date().toISOString()
   };
-  
   orders.push(newOrder);
-  
   // Update product stock
   const productIndex = products.findIndex(p => p.id === parseInt(productId));
   products[productIndex].stock -= quantity;
-  
   res.status(201).json({
     message: 'Order created successfully',
     order: newOrder
@@ -335,24 +341,38 @@ app.post('/api/tasks', (req, res) => {
   const { title, priority = 'medium', assignedTo } = req.body;
   
   if (!title) {
-    return res.status(400).json({ error: 'Title is required' });
+    return res.status(422).json({ error: 'Title is required' });
   }
   
-  const newTask = {
-    id: Date.now(),
-    title,
-    completed: false,
-    priority,
-    assignedTo: assignedTo ? parseInt(assignedTo) : null,
-    createdAt: new Date().toISOString()
-  };
-  
-  tasks.push(newTask);
-  
-  res.status(201).json({
-    message: 'Task created successfully',
-    task: newTask
-  });
+  const allowedPriorities = ['low', 'medium', 'high'];
+  if (priority && !allowedPriorities.includes(priority)) {
+    return res.status(422).json({ error: 'Invalid priority value', allowed: allowedPriorities });
+  }
+    let assignedUserId = null;
+    if (assignedTo !== undefined && assignedTo !== null) {
+      if (assignedTo === '' || isNaN(Number(assignedTo))) {
+        return res.status(422).json({ error: 'assignedTo must be a valid user ID'});
+      }
+      assignedUserId = parseInt(assignedTo);
+      const userExists = users.some(u => u.id === assignedUserId);
+      if (!userExists) {
+        return res.status(422).json({ error: 'assignedTo user does not exist'});
+      }
+    }
+    taskIdCounter += 1;
+    const newTask = {
+      id: taskIdCounter,
+      title,
+      completed: false,
+      priority,
+      assignedTo: assignedUserId,
+      createdAt: new Date().toISOString()
+    };
+    tasks.push(newTask);
+    res.status(201).json({
+      message: 'Task created successfully',
+      task: newTask
+    });
 });
 
 app.put('/api/tasks/:id', (req, res) => {
@@ -586,9 +606,14 @@ app.post('/api/users/bulk', (req, res) => {
   const createdUsers = [];
   const errors = [];
   
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   newUsers.forEach((userData, index) => {
     if (!userData.name || !userData.email) {
       errors.push({ index, error: 'Name and email are required' });
+      return;
+    }
+    if (!emailRegex.test(userData.email)) {
+      errors.push({ index, error: 'Valid email is required'});
       return;
     }
     
