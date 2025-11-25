@@ -277,7 +277,7 @@ app.post('/api/orders', (req, res) => {
   const { userId, productId, quantity = 1 } = req.body;
   
   if (!userId || !productId) {
-    return res.status(400).json({ error: 'User ID and Product ID are required' });
+    return res.status(422).json({ error: 'User ID and Product ID are required' });
   }
   
   const user = users.find(u => u.id === parseInt(userId));
