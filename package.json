@@ -1,8 +1,15 @@
 {
     "scripts": {
-        "start": "concurrently \"cd client && npm start\" \"cd server && node index.js\""
+        "start": "concurrently \"cd client && npm start\" \"cd server && npm start\"",
+        "install:all": "npm install && cd client && npm install && cd ../server && npm install",
+        "dev": "concurrently \"cd client && npm start\" \"cd server && npm run dev\""
     },
     "devDependencies": {
         "concurrently": "^9.2.1"
+    },
+    "dependencies": {
+        "cors": "^2.8.5",
+        "dotenv": "^17.2.3",
+        "express": "^5.2.1"
     }
 }
