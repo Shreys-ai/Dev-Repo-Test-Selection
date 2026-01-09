@@ -3,13 +3,36 @@ import { toast } from 'react-toastify';
 import API from '../../services/api';
 
 function Products({ products, loading, fetchProducts, fetchAnalytics }) {
-  const [newProduct, setNewProduct] = useState({ 
-    name: '', 
-    price: '', 
-    category: '', 
-    stock: '', 
-    description: '' 
-  });
+  const defaultProductState = {
+    name: '',
+    price: '',
+    category: '',
+    stock: '',
+    description: '',
+  };
+
+  const toastBaseOptions = {
+    position: 'bottom-right',
+    theme: 'dark',
+    className: 'app-toast',
+    progressClassName: 'app-toast-progress',
+    autoClose: 2800,
+  };
+
+  const showToast = (variant, message) => {
+    const options = {
+      ...toastBaseOptions,
+      icon: variant === 'success' ? '✅' : '⚠️',
+    };
+
+    if (variant === 'success') {
+      toast.success(message, options);
+    } else {
+      toast.error(message, options);
+    }
+  };
+
+  const [newProduct, setNewProduct] = useState(defaultProductState);
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
 
@@ -27,20 +50,33 @@ function Products({ products, loading, fetchProducts, fetchAnalytics }) {
     return matchesSearch && matchesCategory;
   });
 
-  const handleAddProduct = async (e) => {
-    e.preventDefault();
-    if (!newProduct.name || !newProduct.price || !newProduct.category) {
-      toast.error('Please fill in all required fields: name, price, and category');
+  const handleAddProduct = async (event) => {
+    event.preventDefault();
+
+    const requiredFields = [
+      { key: 'name', label: 'product name' },
+      { key: 'price', label: 'price' },
+      { key: 'category', label: 'category' },
+    ];
+
+    const missingFields = requiredFields
+      .filter(({ key }) => !newProduct[key])
+      .map(({ label }) => label);
+
+    if (missingFields.length) {
+      showToast('error', `Please provide: ${missingFields.join(', ')}`);
       return;
     }
+
     try {
-      const result = await API.products.create(newProduct);
-      setNewProduct({ name: '', price: '', category: '', stock: '', description: '' });
+      await API.products.create(newProduct);
+      setNewProduct(defaultProductState);
       fetchProducts();
       fetchAnalytics();
-      toast.success('Product added successfully!');
+      showToast('success', 'Product added successfully');
     } catch (error) {
-      toast.error('Error adding product: ' + error.message);
+      const errorMessage = error?.response?.data?.message || error.message || 'Error adding product';
+      showToast('error', errorMessage);
     }
   };
 
