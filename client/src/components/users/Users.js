@@ -98,12 +98,6 @@ function Users({ users, loading, fetchUsers, fetchAnalytics }) {
               <h3>{user.name}</h3>
               <p>{user.email}</p>
               <span className={`role-badge ${user.role}`}>{user.role}</span>
-              <button 
-                className="delete-btn"
-                onClick={() => handleDeleteUser(user.id)}
-              >
-                Delete
-              </button>
             </div>
           ))}
         </div>
