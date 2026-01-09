@@ -7,7 +7,7 @@ function Products({ products, loading, fetchProducts, fetchAnalytics }) {
     name: '', 
     price: '', 
     category: '', 
-    stock: '', 
+    quantity: '', 
     description: '' 
   });
   const [search, setSearch] = useState("");
@@ -35,7 +35,7 @@ function Products({ products, loading, fetchProducts, fetchAnalytics }) {
     }
     try {
       const result = await API.products.create(newProduct);
-      setNewProduct({ name: '', price: '', category: '', stock: '', description: '' });
+      setNewProduct({ name: '', price: '', category: '', quantity: '', description: '' });
       fetchProducts();
       fetchAnalytics();
       toast.success('Product added successfully!');
@@ -70,9 +70,9 @@ function Products({ products, loading, fetchProducts, fetchAnalytics }) {
           />
           <input
             type="number"
-            placeholder="Stock"
-            value={newProduct.stock}
-            onChange={(e) => setNewProduct({ ...newProduct, stock: e.target.value })}
+            placeholder="Quantity"
+            value={newProduct.quantity}
+            onChange={(e) => setNewProduct({ ...newProduct, quantity: e.target.value })}
           />
           <textarea
             placeholder="Description"
@@ -116,7 +116,7 @@ function Products({ products, loading, fetchProducts, fetchAnalytics }) {
                 <h3>{product.name}</h3>
                 <p className="price">${product.price}</p>
                 <p className="category">{product.category}</p>
-                <p className={`stock ${product.stock < 20 ? 'low-stock' : ''}`}>Stock: {product.stock}</p>
+                <p className={`quantity ${product.quantity < 20 ? 'low-quantity' : ''}`}>Quantity: {product.quantity}</p>
                 <p className="description">{product.description}</p>
               </div>
             ))

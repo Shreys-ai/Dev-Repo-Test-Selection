@@ -272,11 +272,11 @@
   color: #a5f3fc !important;
 }
 
-.stock {
+.quantity {
   font-weight: 600;
 }
 
-.stock.low-stock {
+.quantity.low-quantity {
   color: #ff6b6b !important;
 }
 
