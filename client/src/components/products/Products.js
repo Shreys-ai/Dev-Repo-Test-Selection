@@ -10,6 +10,7 @@ function Products({ products, loading, fetchProducts, fetchAnalytics }) {
     stock: '', 
     description: '' 
   });
+  
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
 
