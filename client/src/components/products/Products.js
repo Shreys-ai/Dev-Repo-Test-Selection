@@ -97,16 +97,7 @@ function Products({ products, loading, fetchProducts, fetchAnalytics }) {
               className="product-search-input"
               style={{ padding: '0.5rem', width: '60%' }}
             />
-            <select
-              value={categoryFilter}
-              onChange={e => setCategoryFilter(e.target.value)}
-              style={{ padding: '0.5rem', width: '40%' }}
-            >
-              <option value="">All Categories</option>
-              {categories.map(cat => (
-                <option key={cat} value={cat}>{cat}</option>
-              ))}
-            </select>
+
           </div>
         <div className="products-grid">
           {filteredProducts.length === 0 ? (
