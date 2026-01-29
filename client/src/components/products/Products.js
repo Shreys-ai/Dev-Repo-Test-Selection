@@ -86,21 +86,20 @@ function Products({ products, loading, fetchProducts, fetchAnalytics }) {
         </form>
       </div>
 
-      <div className="products-section">
+        <div className="products-section">
         <h2>Products ({filteredProducts.length})</h2>
-          <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+          <div className="product-filter-bar">
             <input
               type="text"
-              placeholder="Search products..."
+              placeholder="Search by name, category, or description"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="product-search-input"
-              style={{ padding: '0.5rem', width: '60%' }}
             />
             <select
               value={categoryFilter}
               onChange={e => setCategoryFilter(e.target.value)}
-              style={{ padding: '0.5rem', width: '40%' }}
+              className="product-filter-select"
             >
               <option value="">All Categories</option>
               {categories.map(cat => (
