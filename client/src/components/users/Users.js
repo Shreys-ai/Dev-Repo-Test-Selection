@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import API from '../../services/api';
 
 function Users({ users, loading, fetchUsers, fetchAnalytics }) {
-  const [newUser, setNewUser] = useState({ name: '', email: '', role: 'user' });
+  const [newUser, setNewUser] = useState({ name: '', email: '', role: 'user', gender: 'male' });
   
   const handleAddUser = async (e) => {
     e.preventDefault();
@@ -33,7 +33,7 @@ function Users({ users, loading, fetchUsers, fetchAnalytics }) {
 
     try {
       const response = await API.users.create(newUser);
-      setNewUser({ name: '', email: '', role: 'user' });
+      setNewUser({ name: '', email: '', role: 'user', gender: 'male' });
       fetchUsers();
       fetchAnalytics();
       toast.success('User added successfully!');
@@ -83,6 +83,14 @@ function Users({ users, loading, fetchUsers, fetchAnalytics }) {
           >
             <option value="user">User</option>
             <option value="admin">Admin</option>
+          </select>
+          <select
+            value={newUser.gender}
+            onChange={(e) => setNewUser({ ...newUser, gender: e.target.value })}
+            disabled={loading}
+          >
+            <option value="male">Male</option>
+            <option value="female">Female</option>
           </select>
           <button type="submit" disabled={loading}>
             {loading ? 'Adding...' : 'Add User'}
