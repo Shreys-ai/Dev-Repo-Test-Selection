@@ -13,6 +13,7 @@ function Products({ products, loading, fetchProducts, fetchAnalytics }) {
   
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
+  const [expandedProductId, setExpandedProductId] = useState(null);
 
   // Get unique categories from products
   const categories = Array.from(new Set(products.map(p => p.category))).filter(Boolean);
@@ -42,6 +43,17 @@ function Products({ products, loading, fetchProducts, fetchAnalytics }) {
       toast.success('Product added successfully!');
     } catch (error) {
       toast.error('Error adding product: ' + error.message);
+    }
+  };
+
+  const toggleProductDetails = (productId) => {
+    setExpandedProductId((prevId) => (prevId === productId ? null : productId));
+  };
+
+  const handleCardKeyDown = (event, productId) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      toggleProductDetails(productId);
     }
   };
 
@@ -113,12 +125,27 @@ function Products({ products, loading, fetchProducts, fetchAnalytics }) {
             <p>No products found.</p>
           ) : (
             filteredProducts.map((product) => (
-              <div key={product.id} className="product-card">
+              <div
+                key={product.id}
+                className={`product-card ${expandedProductId === product.id ? 'expanded' : ''}`}
+                onClick={() => toggleProductDetails(product.id)}
+                onKeyDown={(event) => handleCardKeyDown(event, product.id)}
+                role="button"
+                tabIndex={0}
+              >
                 <h3>{product.name}</h3>
                 <p className="price">${product.price}</p>
                 <p className="category">{product.category}</p>
-                <p className={`stock ${product.stock < 20 ? 'low-stock' : ''}`}>Stock: {product.stock}</p>
-                <p className="description">{product.description}</p>
+                {expandedProductId === product.id && (
+                  <div className="product-details">
+                    <p className={`stock ${product.stock < 20 ? 'low-stock' : ''}`}>
+                      Stock: {product.stock}
+                    </p>
+                    <p className="description">
+                      {product.description ? product.description : 'No description available.'}
+                    </p>
+                  </div>
+                )}
               </div>
             ))
           )}
