@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
@@ -647,9 +648,19 @@ app.post('/api/users/bulk', (req, res) => {
   });
 });
 
+// ============ SERVE REACT FRONTEND (production) ============
+// Serves the built client so frontend + API run from one service/URL.
+const clientBuildPath = path.join(__dirname, '../client/build');
+app.use(express.static(clientBuildPath));
+
+// SPA fallback: any non-API route returns the React app's index.html
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api')) return next();
+  res.sendFile(path.join(clientBuildPath, 'index.html'));
+});
+
 app.listen(PORT, () => {
   console.log(`🚀 Server is running on port ${PORT}`);
-  console.log(`📱 Frontend should run on http://localhost:3000`);
-  console.log(`🔗 Backend API available at http://localhost:${PORT}/api`);
+  console.log(`🔗 API available at /api  |  Frontend served from /`);
 });
 
