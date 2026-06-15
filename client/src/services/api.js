@@ -1,9 +1,15 @@
 // API service for handling all fetch requests
+
+// Base URL for the backend API.
+// Local dev: leave REACT_APP_API_URL unset -> uses CRA's "proxy" in package.json.
+// Production: set REACT_APP_API_URL to the deployed backend, e.g. https://your-api.onrender.com
+const API_BASE_URL = process.env.REACT_APP_API_URL || '';
+
 const API = {
   // Generic fetch method with error handling
   async fetchData(endpoint, options = {}) {
     try {
-      const response = await fetch(endpoint, options);
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.error || `HTTP error! Status: ${response.status}`);
