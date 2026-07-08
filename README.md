@@ -279,6 +279,25 @@ This application is designed to test various AI model capabilities:
 - **Module errors**: Run `npm install` in both root and client directories
 - **API connection**: Verify backend is running on http://localhost:5000
 
+**Git: `fatal: refusing to merge unrelated histories`**
+
+This error occurs when two Git repositories were initialized independently and don't share a common commit ancestor. Common causes:
+
+1. You initialized a local repository with `git init` and made commits, then added a remote repository that was also initialized separately (e.g., on GitHub with a README).
+2. The remote repository history was rewritten (force-pushed) with a completely different history.
+3. You cloned one project and then changed the remote URL to a different, unrelated project.
+
+**How to fix it:**
+
+```bash
+# Allow Git to merge the two unrelated histories
+git pull origin main --allow-unrelated-histories
+```
+
+After this one-time fix, subsequent `git pull` commands will work normally since the histories are now connected.
+
+> **Prevention tip:** When creating a new repository on GitHub, avoid initializing it with a README, `.gitignore`, or license if you plan to push an existing local repository. Instead, create an empty remote and push your local history to it.
+
 **Development Tips:**
 - Use browser Network tab to debug API calls
 - Check console logs for detailed error messages

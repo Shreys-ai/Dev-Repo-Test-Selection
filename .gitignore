@@ -1,2 +1,23 @@
 node_modules/
 client/node_modules/
+
+# macOS system files
+.DS_Store
+**/.DS_Store
+
+# IDE / Editor directories
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Build artifacts and zip files
+*.zip
+dist/
+build/
+client/build/
+
+# Environment files
+.env
+.env.local
+.env.*.local
