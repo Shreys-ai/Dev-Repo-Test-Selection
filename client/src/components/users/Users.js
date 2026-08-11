@@ -43,20 +43,6 @@ function Users({ users, loading, fetchUsers, fetchAnalytics }) {
     }
   };
 
-  const handleDeleteUser = async (userId) => {
-    if (!window.confirm('Are you sure you want to delete this user?')) return;
-    
-    try {
-      await API.users.delete(userId);
-      fetchUsers();
-      fetchAnalytics();
-      toast.success('User deleted successfully!');
-    } catch (error) {
-      console.error('Error deleting user:', error);
-      toast.error('Error deleting user');
-    }
-  };
-
   return (
     <div className="tab-content">
       <div className="form-section">
@@ -98,12 +84,6 @@ function Users({ users, loading, fetchUsers, fetchAnalytics }) {
               <h3>{user.name}</h3>
               <p>{user.email}</p>
               <span className={`role-badge ${user.role}`}>{user.role}</span>
-              <button 
-                className="delete-btn"
-                onClick={() => handleDeleteUser(user.id)}
-              >
-                Delete
-              </button>
             </div>
           ))}
         </div>
