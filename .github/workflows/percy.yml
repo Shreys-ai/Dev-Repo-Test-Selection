@@ -1,0 +1,59 @@
+name: Percy Visual Tests
+
+on:
+  push:
+    branches: [main, 'feature/**']
+  pull_request:
+    branches: [main]
+
+jobs:
+  percy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # Install and start the backend server
+      - name: Install server dependencies
+        run: cd server && npm install
+
+      - name: Start backend server
+        run: cd server && node index.js &
+        env:
+          PORT: 5001
+
+      # Install and build the frontend
+      - name: Install client dependencies
+        run: cd client && npm install
+
+      - name: Build client
+        run: cd client && npm run build
+
+      - name: Serve client build
+        run: npx serve -s client/build -l 3000 &
+
+      - name: Wait for servers to be ready
+        run: |
+          echo "Waiting for backend..."
+          timeout 30 bash -c 'until curl -sf http://localhost:5001/api/health; do sleep 1; done'
+          echo "Waiting for frontend..."
+          timeout 30 bash -c 'until curl -sf http://localhost:3000; do sleep 1; done'
+          echo "Both servers ready."
+
+      # Install VRT test dependencies
+      - name: Install VRT test dependencies
+        run: cd tests/vrt && npm ci
+
+      - name: Install Playwright Chromium
+        run: cd tests/vrt && npx playwright install --with-deps chromium
+
+      # Run Percy VRT
+      - name: Run Percy visual tests
+        run: cd tests/vrt && npx percy exec -- npx playwright test --reporter=dot
+        env:
+          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
+          PERCY_PULL_REQUEST: ${{ github.event.pull_request.number }}
+          BASE_URL: http://localhost:3000
