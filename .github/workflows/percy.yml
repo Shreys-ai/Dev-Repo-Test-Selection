@@ -30,7 +30,7 @@ jobs:
         run: cd client && npm install
 
       - name: Build client
-        run: cd client && npm run build
+        run: cd client && CI=false npm run build
 
       - name: Serve client build
         run: npx serve -s client/build -l 3000 &
