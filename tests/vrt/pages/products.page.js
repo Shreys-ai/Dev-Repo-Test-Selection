@@ -11,7 +11,7 @@ class ProductsPage {
   }
 
   async waitForProductsLoaded() {
-    await this.page.waitForSelector(productsLocators.PRODUCTS_GRID, { state: 'visible' });
+    await this.page.waitForSelector(productsLocators.PRODUCT_CARD, { state: 'visible', timeout: 15000 });
   }
 
   async getProductCount() {
