@@ -87,6 +87,8 @@ function Products({ products, loading, fetchProducts, fetchAnalytics }) {
       </div>
 
       <div className="products-section">
+        <img src="/products-banner.png" alt="banner" />
+        <img src="/sale-promo.png" alt="" />
         <h2>Products ({filteredProducts.length})</h2>
           <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
             <input
@@ -108,6 +110,7 @@ function Products({ products, loading, fetchProducts, fetchAnalytics }) {
               ))}
             </select>
           </div>
+        <div style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '0.5rem' }}>Product Catalog</div>
         <div className="products-grid">
           {filteredProducts.length === 0 ? (
             <p>No products found.</p>
@@ -122,6 +125,7 @@ function Products({ products, loading, fetchProducts, fetchAnalytics }) {
                   {product.stock < 15 && <span className="low-stock-badge"> — Low Stock!</span>}
                 </p>
                 <p className="description">{product.description}</p>
+                <div onClick={() => toast.info(`Viewing ${product.name}`)} className="view-btn">View Details</div>
               </div>
             ))
           )}
