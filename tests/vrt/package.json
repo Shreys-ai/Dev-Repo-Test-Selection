@@ -1,0 +1,14 @@
+{
+  "name": "dev-app-vrt",
+  "version": "1.0.0",
+  "description": "Percy VRT tests for Dev-Repo-Test-Selection Products page",
+  "scripts": {
+    "test": "npx playwright test",
+    "test:percy": "npx percy exec -- npx playwright test"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.49.0",
+    "@percy/cli": "^1.30.7",
+    "@percy/playwright": "^1.0.6"
+  }
+}
