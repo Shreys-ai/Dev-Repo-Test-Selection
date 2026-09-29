@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
@@ -13,11 +14,13 @@ let users = [
 ];
 
 let products = [
-  { id: 1, name: 'Laptop', price: 999.99, category: 'Electronics', stock: 50, description: 'High-performance laptop' },
-  { id: 2, name: 'Smartphone', price: 699.99, category: 'Electronics', stock: 100, description: 'Latest smartphone model' },
-  { id: 3, name: 'Headphones', price: 199.99, category: 'Electronics', stock: 75, description: 'Wireless noise-canceling headphones' },
+  { id: 1, name: 'Laptop Pro', price: 1299.99, category: 'Electronics', stock: 50, description: 'High-performance laptop with M3 chip' },
+  { id: 2, name: 'Smartphone', price: 749.99, category: 'Electronics', stock: 100, description: 'Latest smartphone model' },
+  { id: 3, name: 'Headphones', price: 199.99, category: 'Electronics', stock: 8, description: 'Wireless noise-canceling headphones' },
   { id: 4, name: 'Coffee Maker', price: 89.99, category: 'Home', stock: 30, description: 'Automatic coffee maker' },
-  { id: 5, name: 'Book', price: 14.99, category: 'Education', stock: 200, description: 'Programming fundamentals book' }
+  { id: 5, name: 'Book', price: 24.99, category: 'Education', stock: 200, description: 'Programming fundamentals book' },
+  { id: 6, name: 'Mechanical Keyboard', price: 159.99, category: 'Electronics', stock: 45, description: 'RGB mechanical keyboard with Cherry MX switches' },
+  { id: 7, name: 'Yoga Mat', price: 34.99, category: 'Fitness', stock: 12, description: 'Non-slip exercise yoga mat' }
 ];
 
 let orders = [];
@@ -28,7 +31,7 @@ let tasks = [
 ];
 
 let userIdCounter = users.length;
-let productIdCounter = products.length;
+let productIdCounter = 7;
 let orderIdCounter = 0;
 let taskIdCounter = tasks.length;
 
@@ -647,9 +650,19 @@ app.post('/api/users/bulk', (req, res) => {
   });
 });
 
+// ============ SERVE REACT FRONTEND (production) ============
+// Serves the built client so frontend + API run from one service/URL.
+const clientBuildPath = path.join(__dirname, '../client/build');
+app.use(express.static(clientBuildPath));
+
+// SPA fallback: any non-API route returns the React app's index.html
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api')) return next();
+  res.sendFile(path.join(clientBuildPath, 'index.html'));
+});
+
 app.listen(PORT, () => {
   console.log(`🚀 Server is running on port ${PORT}`);
-  console.log(`📱 Frontend should run on http://localhost:3000`);
-  console.log(`🔗 Backend API available at http://localhost:${PORT}/api`);
+  console.log(`🔗 API available at /api  |  Frontend served from /`);
 });
 
