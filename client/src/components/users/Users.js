@@ -18,11 +18,7 @@ function Users({ users, loading, fetchUsers, fetchAnalytics }) {
       toast.error('Name is required!');
       return;
     }
-    
-    if (!newUser.email) {
-      toast.error('Email is required!');
-      return;
-    }
+  
     
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
